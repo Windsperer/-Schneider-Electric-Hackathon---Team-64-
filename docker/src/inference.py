@@ -1,3 +1,7 @@
+
+
+
+
 from sparknlp.base import *
 from sparknlp.annotator import *
 from pyspark.ml import Pipeline
@@ -72,10 +76,5 @@ bert_clf_pipeline = Pipeline(
 bert_pipelineModel = bert_clf_pipeline.fit(trainDF)
 
 preds = bert_pipelineModel.transform(testDF)\
-    .withColumn("pollutant",when(col("class.result") == "Methane (CH4)",lit(2))
-                .when(col("class.result") == "Carbon dioxide (CO2)",lit(1))
-                .when(col("class.result") == "Nitrogen oxides (NOX)",lit(0)).otherwise(lit(-1)))\
-    .filter(col("pollutant") != -1)
 
 preds.toPandas().to_csv('out.csv')
-preds.write.csv("nlp_predictions.csv")
